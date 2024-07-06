@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dice Roll Game and OTP Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin: 10px;
+        }
+
+        .dice {
+            font-size: 100px;
+            margin: 20px 0;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            background-color: #007BFF;
+            color: white;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .otp-generator button {
+            background-color: #28A745;
+        }
+
+        .otp-generator button:hover {
+            background-color: #218838;
+        }
+
+        p {
+            font-size: 24px;
+            margin: 20px 0 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container dice-game">
+        <h1>Dice Roll Game</h1>
+        <div class="dice" id="dice">🎲</div>
+        <button id="rollButton">Roll the Dice</button>
+        <p id="result"></p>
+    </div>
+
+    <div class="container otp-generator">
+        <h1>OTP Generator</h1>
+        <button id="generateButton">Generate OTP</button>
+        <p id="otp"></p>
+    </div>
+
+    <script>
+        document.getElementById('rollButton').addEventListener('click', function() {
+            const dice = document.getElementById('dice');
+            const result = document.getElementById('result');
+            const randomNumber = Math.floor(Math.random() * 6) + 1;
+            
+            dice.textContent = `🎲`;
+            result.textContent = `You rolled a ${randomNumber}`;
+        });
+
+        document.getElementById('generateButton').addEventListener('click', function() {
+            const otp = Math.floor(100000 + Math.random() * 900000);
+            document.getElementById('otp').textContent = `Your OTP is: ${otp}`;
+        });
+    </script>
+</body>
+</html>

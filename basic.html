@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>ToDo</title>
+</head>
+<body>
+    <input type="text" placeholder="Enter task" id="txt"/>
+    <input type="date" id="dt"/>
+    <button id="bt" onclick="addtask()">Add Task</button>
+    <div id="dv1"></div>
+
+    <script>
+        let cnt=1;
+
+        function addtask(){
+            let task=document.querySelector("#txt").value;
+            let date=document.querySelector("#dt").value;
+
+            let div=document.createElement("div");
+            let divid="d" + cnt;
+            div.setAttribute("id",divid);
+
+            let p1=document.createElement("p");
+            let pid1 = "pa" + cnt; 
+            p1.setAttribute("id",pid1);
+            p1.innerHTML=task;
+            
+            let p2=document.createElement("p");
+            let pid2 = "pb" + cnt; 
+            p2.setAttribute("id",pid2);
+            p2.innerHTML=date;
+
+            let bt=document.createElement("button");
+            bt.innerHTML="Delete";
+            bt.setAttribute("onclick",`${divid}.remove()`);
+
+            cnt++;
+            div.append(p1);
+            div.append(p2);
+            div.append(bt);
+            document.getElementById("dv1").append(div);
+        }
+    </script>
+</body>
+</html>

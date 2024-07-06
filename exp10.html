@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock Paper Scissors Game</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<style>
+    body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+}
+
+.game-container {
+    text-align: center;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    margin: 0 20px;
+}
+
+.choices {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px 0;
+}
+
+.choice {
+    font-size: 50px;
+    cursor: pointer;
+    border: none;
+    background: none;
+    outline: none;
+    transition: transform 0.2s;
+}
+
+.choice:hover {
+    transform: scale(1.2);
+}
+
+.result {
+    margin-top: 20px;
+}
+
+.result p, .result h2 {
+    margin: 10px 0;
+}
+
+@media (max-width: 600px) {
+    .choice {
+        font-size: 40px;
+    }
+
+    .game-container {
+        padding: 15px;
+    }
+
+    .result p, .result h2 {
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 400px) {
+    .choice {
+        font-size: 30px;
+    }
+
+    .result p, .result h2 {
+        font-size: 16px;
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+}
+
+</style>
+<body>
+    <div class="game-container">
+        <h1>Rock Paper Scissors</h1>
+        <div class="choices">
+            <button class="choice" id="rock">✊</button>
+            <button class="choice" id="paper">✋</button>
+            <button class="choice" id="scissors">✌️</button>
+        </div>
+        <div class="result">
+            <p id="userChoice">You chose: <span>-</span></p>
+            <p id="computerChoice">Computer chose: <span>-</span></p>
+            <h2 id="outcome">Result: <span>-</span></h2>
+        </div>
+    </div>
+    <script src="script.js">
+        const choices = document.querySelectorAll('.choice');
+const userChoiceDisplay = document.getElementById('userChoice').querySelector('span');
+const computerChoiceDisplay = document.getElementById('computerChoice').querySelector('span');
+const outcomeDisplay = document.getElementById('outcome').querySelector('span');
+
+choices.forEach(choice => choice.addEventListener('click', () => {
+    const userChoice = choice.id;
+    const computerChoice = getComputerChoice();
+    const outcome = getOutcome(userChoice, computerChoice);
+
+    userChoiceDisplay.textContent = userChoice;
+    computerChoiceDisplay.textContent = computerChoice;
+    outcomeDisplay.textContent = outcome;
+}));
+
+function getComputerChoice() {
+    const choices = ['rock', 'paper', 'scissors'];
+    const randomIndex = Math.floor(Math.random() * choices.length);
+    return choices[randomIndex];
+}
+
+function getOutcome(userChoice, computerChoice) {
+    if (userChoice === computerChoice) {
+        return 'It\'s a tie!';
+    }
+    if (
+        (userChoice === 'rock' && computerChoice === 'scissors') ||
+        (userChoice === 'paper' && computerChoice === 'rock') ||
+        (userChoice === 'scissors' && computerChoice === 'paper')
+    ) {
+        return 'You win!';
+    }
+    return 'You lose!';
+}
+
+    </script>
+</body>
+</html>

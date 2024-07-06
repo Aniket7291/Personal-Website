@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Picker</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+        crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    <style>
+        body {
+            padding-top: 56px;
+            background-color: transparent;
+            background-image: url(bg.jpeg);
+        }
+
+        .navbar {
+            background-color: #6c757d !important;
+        }
+
+        .navbar-brand,
+        .nav-link {
+            color: white !important;
+        }
+
+        .nav-link:hover {
+            color: #ffc107 !important;
+        }
+
+        .bg-custom {
+            background-color: transparent !important;
+        }
+
+        .bg-custom-light {
+            background-color: transparent !important;
+        }
+
+        .card {
+            border: none;
+        }
+
+        .card img {
+            max-height: 200px;
+            object-fit: cover;
+        }
+
+        .dropdown-toggle::after {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    
+    <nav class="navbar navbar-expand-lg navbar-dark bg-custom fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Menu Picker</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showCategories()">Categories</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container" id="categoriesSection">
+        <div class="text-center bg-custom-light text-white p-3 mb-4">
+            <h1>Categories</h1>
+        </div>
+        <div class="row mb-3">
+            <div class="col">
+                <select class="form-select" id="selectCategory" onchange="fetchRecipesByCategory()">
+                    <option value="">Select Category</option>
+                </select>
+            </div>
+        </div>
+        <div class="row" data-bs-target="blank" id="categoryRecipesDisplay">
+        </div>
+    </div>
+
+    <div class="container" id="recipeDetailsSection" style="display: none;">
+    </div>
+
+    <script>
+        function showCategories() {
+            document.getElementById('categoriesSection').style.display = 'block';
+            document.getElementById('recipeDetailsSection').style.display = 'none';
+        }
+
+        function showRecipeDetails() {
+            document.getElementById('categoriesSection').style.display = 'none';
+            document.getElementById('recipeDetailsSection').style.display = 'block';
+        }
+
+        function fetchCategories() {
+            const uri = 'https://www.themealdb.com/api/json/v1/1/list.php?c=list';
+            fetch(uri)
+                .then(response => response.json())
+                .then(data => {
+                    const selectCategory = document.getElementById('selectCategory');
+                    data.meals.forEach(meal => {
+                        const option = document.createElement('option');
+                        option.value = meal.strCategory;
+                        option.textContent = meal.strCategory;
+                        selectCategory.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error fetching categories:', error));
+        }
+
+        function fetchAndDisplayRecipes(uri, displayElementId) {
+            fetch(uri)
+                .then(response => response.json())
+                .then(data => {
+                    const displayElement = document.getElementById(displayElementId);
+                    displayElement.innerHTML = ''; // Clear previous recipes
+                    data.meals.forEach(meal => {
+                        const mealDiv = document.createElement('div');
+                        mealDiv.className = 'col-md-4 mb-3';
+                        mealDiv.innerHTML = `
+                            <div class="card recipe-card">
+                                <img src="${meal.strMealThumb}" class="card-img-top" alt="${meal.strMeal}">
+                                <div class="card-body">
+                                    <h5 class="card-title">${meal.strMeal}</h5>
+                                    <button class="btn btn-warning" onclick="viewRecipe(${meal.idMeal})">View Recipe</button>
+                                </div>
+                            </div>
+                        `;
+                        displayElement.appendChild(mealDiv);
+                    });
+                })
+                .catch(error => console.error('Error fetching recipes:', error));
+        }
+
+        function viewRecipe(id) {
+            const uri = `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`;
+            fetch(uri)
+                .then(response => response.json())
+                .then(data => {
+                    const recipe = data.meals[0];
+                    const recipeDetails = document.getElementById('recipeDetailsSection');
+                    recipeDetails.innerHTML = `
+                        <div class="text-center bg-custom-light text-white p-3 mb-4">
+                            <h1>${recipe.strMeal}</h1>
+                        </div>
+                        <div class="card mb-3">
+                            <img src="${recipe.strMealThumb}" class="card-img-top" alt="${recipe.strMeal}">
+                            <div class="card-body">
+                                <h5 class="card-title">${recipe.strMeal}</h5>
+                                <p class="card-text">${recipe.strInstructions}</p>
+                                <a href="${recipe.strYoutube}" class="btn btn-warning" target="_blank">Watch on YouTube</a>
+                            </div>
+                        </div>
+                    `;
+                    showRecipeDetails();
+                })
+                .catch(error => console.error('Error fetching recipe details:', error));
+        }
+
+        function fetchRecipesByCategory() {
+            const selectedCategory = document.getElementById('selectCategory').value;
+            if (selectedCategory) {
+                const uri = `https://www.themealdb.com/api/json/v1/1/filter.php?c=${selectedCategory}`;
+                fetchAndDisplayRecipes(uri, 'categoryRecipesDisplay');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchCategories();
+        });
+    </script>
+</body>
+
+</html>
